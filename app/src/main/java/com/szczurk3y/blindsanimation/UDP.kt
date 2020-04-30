@@ -11,7 +11,6 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 
 class UDP(val activity: Activity): Runnable {
-
     private val PORT = 10107
     private val HOST = "192.168.1.255"
 
@@ -27,10 +26,6 @@ class UDP(val activity: Activity): Runnable {
                 if (text == "rola;") {
                     activity.runOnUiThread {
                         MainActivity.blindsCounter += 1
-                        MainActivity.progressBar?.visibility = View.GONE
-                        MainActivity.recyclerView?.visibility = View.VISIBLE
-                        MainActivity.blindsList.add(Blind())
-                        MainActivity.recyclerView?.adapter = BlindsAdapter(MainActivity.blindsList)
                     }
                     Log.i("UDP", text + " " + MainActivity.blindsCounter)
                 }

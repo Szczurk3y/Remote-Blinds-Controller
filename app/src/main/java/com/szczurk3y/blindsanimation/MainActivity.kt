@@ -14,8 +14,15 @@ import java.lang.Exception
 import java.net.DatagramPacket
 import java.net.DatagramSocket
 import java.net.InetAddress
+import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
+
+data class Blind(
+    var blind: ImageView? = null,
+    var blindCoverPercentage: Int = 0,
+    var ip: Int? = null
+)
 
 class MainActivity : AppCompatActivity() {
     private var pointingHand: ImageView? = null
@@ -31,7 +38,20 @@ class MainActivity : AppCompatActivity() {
         var progressBar: ProgressBar? = null
         var recyclerView: RecyclerView? = null
         var activeBlind = 0
-        var blindsCounter = 0
+        var blindsCounter by Delegates.observable(0) {property, oldValue, newValue ->
+            if (newValue > 0) {
+                progressBar?.visibility = View.GONE
+                recyclerView?.visibility = View.VISIBLE
+                if (newValue > oldValue) {
+                    blindsList.add(Blind())
+                    recyclerView?.adapter = BlindsAdapter(blindsList)
+                }
+            } else if (newValue < 1) {
+                progressBar?.visibility = View.VISIBLE
+                recyclerView?.visibility = View.GONE
+            }
+
+        }
         val blindsList = mutableListOf<Blind>()
     }
 
