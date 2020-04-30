@@ -1,33 +1,39 @@
 package com.szczurk3y.blindsanimation
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.TransitionDrawable
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.TranslateAnimation
 import android.widget.*
-import com.daimajia.androidanimations.library.Techniques
-import com.daimajia.androidanimations.library.YoYo
+import androidx.recyclerview.widget.RecyclerView
 import de.hdodenhof.circleimageview.CircleImageView
+import java.lang.Exception
+import java.net.DatagramPacket
+import java.net.DatagramSocket
+import java.net.InetAddress
 import java.util.concurrent.atomic.AtomicBoolean
-import kotlin.concurrent.thread
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
-
     private var pointingHand: ImageView? = null
-    private var blind: ImageView? = null
-    private var blindRelativeLayout: RelativeLayout? = null
     private var arrowDropDown: CircleImageView? = null
     private var arrowDropUp: CircleImageView? = null
     private var setButton: Button? = null
+    private var blindRelativeLayout: RelativeLayout? = null
     private val actionDownDownFlag = AtomicBoolean(true)
     private val actionDownUpFlag = AtomicBoolean(true)
-    private var topRotarySomething: ImageView? = null
-    private var tactileLayout: LinearLayout? = null
 
-    private var testTextView: TextView? = null
+    companion object {
+        @SuppressLint("StaticFieldLeak")
+        var progressBar: ProgressBar? = null
+        var recyclerView: RecyclerView? = null
+        var activeBlind = 0
+        var blindsCounter = 0
+        val blindsList = mutableListOf<Blind>()
+    }
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,21 +41,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         initItems()
-
-        blind!!.post {
-            val animation = TranslateAnimation(
-                blind!!.x,
-                blind!!.x,
-                blind!!.y,
-                blind!!.y + blind!!.height/1.3f
-            )
-            animation.duration = 1500
-            animation.fillAfter = false
-            animation.repeatCount = 2
-            animation.setAnimationListener(PointingHandAnimationListener(pointingHand!!))
-            pointingHand!!.startAnimation(animation)
-            blind!!.y = -blind!!.height.toFloat()
-        }
+        Thread(UDP(this)).start()
 
         arrowDropDown?.let {
             arrowDropDown!!.setOnTouchListener { view, motionEvent ->
@@ -57,8 +49,8 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         actionDownDownFlag.set(true)
                         while (actionDownDownFlag.get()) {
-                            if (blind!!.y + blind!!.height < blindRelativeLayout!!.height - 15)
-                            blind!!.y = blind!!.y + 1
+                            if (blindsList[activeBlind].blind!!.y + blindsList[activeBlind].blind!!.height < blindsList[activeBlind].blind!!.height - 15)
+                                blindsList[activeBlind].blind!!.y = blindsList[activeBlind].blind!!.y + 1
                             Thread.sleep(3)
                         }
                     }
@@ -81,8 +73,8 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         actionDownUpFlag.set(true)
                         while (actionDownUpFlag.get()) {
-                            if (blind!!.y + blind!!.height > 0) {
-                                blind!!.y = blind!!.y - 1
+                            if (blindsList[activeBlind].blind!!.y + blindsList[activeBlind].blind!!.height > 0) {
+                                blindsList[activeBlind].blind!!.y = blindsList[activeBlind].blind!!.y - 1
                                 Thread.sleep(3)
                             }
                         }
@@ -100,30 +92,16 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        tactileLayout?.let {
-            tactileLayout!!.setOnTouchListener {view, motionEvent ->
-                when(motionEvent.action) {
-                    MotionEvent.ACTION_MOVE -> {
-                        testTextView!!.text = motionEvent.y.toString()
-                        if (motionEvent.y < blindRelativeLayout!!.height - 10 && motionEvent.y > 0)
-                            blind!!.y = motionEvent.y - blind!!.height
-                    }
-                }
-                true
-            }
-        }
+
     }
 
     private fun initItems(): Unit {
+        progressBar = findViewById(R.id.progressBar)
         pointingHand = findViewById(R.id.pointing_hand)
-        blind = findViewById(R.id.blind)
         arrowDropDown = findViewById(R.id.arrowDropDown)
         arrowDropUp = findViewById(R.id.arrowDropUp)
         setButton = findViewById(R.id.setButton)
-        topRotarySomething = findViewById(R.id.topRotarySomething)
-        tactileLayout = findViewById(R.id.tactileLayout)
         blindRelativeLayout = findViewById(R.id.blindRelativeLayout)
-
-        testTextView = findViewById(R.id.textView)
+        recyclerView = findViewById(R.id.recyclerView)
     }
 }

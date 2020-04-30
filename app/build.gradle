@@ -37,6 +37,6 @@ dependencies {
     /* YoYo reference */
     implementation 'com.daimajia.easing:library:2.0@aar'
     implementation 'com.daimajia.androidanimations:library:2.3@aar'
-    /* percentage layout */
-    implementation 'com.android.support:percent:23.3.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
 }

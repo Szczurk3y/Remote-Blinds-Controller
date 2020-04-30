@@ -1,100 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
     <!--        190 285-->
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="190dp"
-        android:layout_height="290dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/windowframe"
-        android:focusable="true"
-        android:clickable="true"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent">
-        <ImageView
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:id="@+id/topRotarySomething"
-            android:src="@drawable/toprotarysomethig"
-            android:contentDescription="Blind's rotary something" />
-
-        <RelativeLayout
-            android:id="@+id/blindRelativeLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="20dp"
-            android:clickable="true"
-            android:focusable="true">
-            <ImageView
-                android:id="@+id/blind"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/blind"
-                android:contentDescription="Blind's here" />
-        </RelativeLayout>
-
-        <ImageView
-            android:id="@+id/pointing_hand"
-            android:layout_width="75dp"
-            android:layout_marginTop="10dp"
-            android:layout_height="75dp"
-            android:src="@drawable/pointing_finger"
-            android:contentDescription="Pointing finger"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
-            android:alpha="0"
-            />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/tactileLayout"
-            android:orientation="horizontal"/>
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/setButton"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent">
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/arrowDropDown"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:focusable="true"
-                android:clickable="true"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/ic_arrow_drop_down_black_24dp"
-                app:civ_border_color="@color/colorLeftCircle"
-                app:civ_border_width="2dp" />
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/item_blind" />
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.Material.ProgressBar.Large"
+        app:layout_constraintBottom_toTopOf="@id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@id/setButton"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/arrowDropDown"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:focusable="true"
+                    android:clickable="true"
+                    android:layout_marginEnd="20dp"
+                    android:src="@drawable/ic_arrow_drop_down_black_24dp"
+                    app:civ_border_color="@color/colorLeftCircle"
+                    app:civ_border_width="2dp" />
 
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/arrowDropUp"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:backgroundTint="@color/colorAccent"
-                android:clickable="true"
-                android:focusable="true"
-                android:layout_marginStart="20dp"
-                android:src="@drawable/ic_arrow_drop_up_black_24dp"
-                app:civ_border_color="@color/colorRightCircle"
-                app:civ_border_width="2dp" />
-    </LinearLayout>
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/arrowDropUp"
+                    android:layout_width="75dp"
+                    android:layout_height="75dp"
+                    android:backgroundTint="@color/colorAccent"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:layout_marginStart="20dp"
+                    android:src="@drawable/ic_arrow_drop_up_black_24dp"
+                    app:civ_border_color="@color/colorRightCircle"
+                    app:civ_border_width="2dp" />
+        </LinearLayout>
     <Button
         android:id="@+id/setButton"
         android:layout_width="125dp"
@@ -126,10 +95,7 @@
         android:layout_height="wrap_content"
         android:text="TextView"
         tools:layout_editor_absoluteX="32dp"
-        tools:layout_editor_absoluteY="53dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginTop="20dp"/>
+        tools:layout_editor_absoluteY="18dp"
+        tools:ignore="MissingConstraints" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
