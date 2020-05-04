@@ -12,6 +12,9 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_blind, parent, false)
+        blindsList[viewType].blind?.let {
+            view.blind.y = blindsList[viewType].blind!!.y
+        }
         return ViewHolder(view)
     }
 
@@ -41,7 +44,7 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        MainActivity.activeBlind = holder.layoutPosition
+        BlindsHandler.activeBlind = holder.layoutPosition
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

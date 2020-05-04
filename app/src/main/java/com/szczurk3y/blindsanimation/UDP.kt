@@ -22,12 +22,11 @@ class UDP(val activity: Activity): Runnable {
             val datagramPacket = DatagramPacket(messageBuffer, messageBuffer.size)
             while (true) {
                 datagramSocket.receive(datagramPacket)
-                val text = String(messageBuffer, 0, datagramPacket.length)
-                if (text == "rola;") {
-                    activity.runOnUiThread {
-                        MainActivity.blindsCounter += 1
-                    }
-                    Log.i("UDP", text + " " + MainActivity.blindsCounter)
+                val text: String? = String(messageBuffer, 0, datagramPacket.length)
+                val ip: InetAddress? = datagramPacket.address
+                val blind = Blind(text = text, ip = ip)
+                activity.runOnUiThread {
+                    BlindsHandler.checkAndAdd(blind)
                 }
             }
         } catch (e: Exception) {

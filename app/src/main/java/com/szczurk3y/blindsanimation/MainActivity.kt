@@ -18,12 +18,6 @@ import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.properties.Delegates
 
-data class Blind(
-    var blind: ImageView? = null,
-    var blindCoverPercentage: Int = 0,
-    var ip: Int? = null
-)
-
 class MainActivity : AppCompatActivity() {
     private var pointingHand: ImageView? = null
     private var arrowDropDown: CircleImageView? = null
@@ -37,22 +31,6 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak")
         var progressBar: ProgressBar? = null
         var recyclerView: RecyclerView? = null
-        var activeBlind = 0
-        var blindsCounter by Delegates.observable(0) {property, oldValue, newValue ->
-            if (newValue > 0) {
-                progressBar?.visibility = View.GONE
-                recyclerView?.visibility = View.VISIBLE
-                if (newValue > oldValue) {
-                    blindsList.add(Blind())
-                    recyclerView?.adapter = BlindsAdapter(blindsList)
-                }
-            } else if (newValue < 1) {
-                progressBar?.visibility = View.VISIBLE
-                recyclerView?.visibility = View.GONE
-            }
-
-        }
-        val blindsList = mutableListOf<Blind>()
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -69,8 +47,8 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         actionDownDownFlag.set(true)
                         while (actionDownDownFlag.get()) {
-                            if (blindsList[activeBlind].blind!!.y + blindsList[activeBlind].blind!!.height < blindsList[activeBlind].blind!!.height - 15)
-                                blindsList[activeBlind].blind!!.y = blindsList[activeBlind].blind!!.y + 1
+                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height < BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height - 15)
+                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + 1
                             Thread.sleep(3)
                         }
                     }
@@ -93,8 +71,8 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         actionDownUpFlag.set(true)
                         while (actionDownUpFlag.get()) {
-                            if (blindsList[activeBlind].blind!!.y + blindsList[activeBlind].blind!!.height > 0) {
-                                blindsList[activeBlind].blind!!.y = blindsList[activeBlind].blind!!.y - 1
+                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height > 0) {
+                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y - 1
                                 Thread.sleep(3)
                             }
                         }
@@ -125,3 +103,5 @@ class MainActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recyclerView)
     }
 }
+
+
