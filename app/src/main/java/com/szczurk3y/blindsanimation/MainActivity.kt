@@ -16,6 +16,7 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.math.floor
 import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
@@ -47,9 +48,11 @@ class MainActivity : AppCompatActivity() {
                     override fun run() {
                         actionDownDownFlag.set(true)
                         while (actionDownDownFlag.get()) {
-                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height < BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height - 15)
+                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height < BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height) {
                                 BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + 1
-                            Thread.sleep(3)
+                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blindCoverPercentage = floor(((BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height) / BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
+                                Thread.sleep(3)
+                            }
                         }
                     }
                 })
@@ -73,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                         while (actionDownUpFlag.get()) {
                             if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height > 0) {
                                 BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y - 1
+                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blindCoverPercentage = floor(((BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height) / BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
                                 Thread.sleep(3)
                             }
                         }
@@ -101,6 +105,7 @@ class MainActivity : AppCompatActivity() {
         setButton = findViewById(R.id.setButton)
         blindRelativeLayout = findViewById(R.id.blindRelativeLayout)
         recyclerView = findViewById(R.id.recyclerView)
+        recyclerView?.adapter = BlindsAdapter(BlindsHandler.blindsList)
     }
 }
 

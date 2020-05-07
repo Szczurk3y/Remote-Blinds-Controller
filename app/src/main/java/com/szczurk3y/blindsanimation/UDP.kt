@@ -24,7 +24,7 @@ class UDP(val activity: Activity): Runnable {
                 datagramSocket.receive(datagramPacket)
                 val text: String? = String(messageBuffer, 0, datagramPacket.length)
                 val ip: InetAddress? = datagramPacket.address
-                val blind = Blind(text = text, ip = ip)
+                val blind = Blind(udpPacketText = text, ip = ip)
                 activity.runOnUiThread {
                     BlindsHandler.checkAndAdd(blind)
                 }
