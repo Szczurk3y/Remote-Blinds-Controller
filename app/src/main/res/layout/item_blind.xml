@@ -60,17 +60,6 @@
                     android:layout_height="match_parent"
                     android:orientation="horizontal" />
             </RelativeLayout>
-
-            <ImageView
-                android:id="@+id/pointing_hand"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="10dp"
-                android:alpha="0"
-                android:contentDescription="Pointing finger"
-                android:src="@drawable/pointing_finger" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -46,7 +46,6 @@ object BlindsHandler {
         if (blindsList.size > 0) {
             MainActivity.progressBar?.visibility = View.GONE
             MainActivity.recyclerView?.visibility = View.VISIBLE
-//            MainActivity.recyclerView?.adapter = BlindsAdapter(blindsList)
             MainActivity.recyclerView?.adapter?.notifyItemChanged(blindsList.size, blindsList)
 
         } else if (blindsList.size < 1) {
