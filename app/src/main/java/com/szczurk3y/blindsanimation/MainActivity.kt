@@ -3,9 +3,11 @@ package com.szczurk3y.blindsanimation
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
+import android.content.Intent
 import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.StrictMode
 import android.telecom.Call
 import android.util.Log
 import android.view.MotionEvent
@@ -17,9 +19,7 @@ import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
 import java.lang.Exception
-import java.net.DatagramPacket
-import java.net.DatagramSocket
-import java.net.InetAddress
+import java.net.*
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.floor
@@ -29,23 +29,47 @@ class MainActivity : AppCompatActivity() {
     private var arrowDropDown: CircleImageView? = null // Arrow view to push blind in down direction
     private var arrowDropUp: CircleImageView? = null // Arrow view to push blind in up direction
     private var setButton: Button? = null // Button view to send GET request to all detected blinds
+    private var optionsButton: Button? = null
     private val actionDownDownFlag = AtomicBoolean(true) // Variable to start/stop pushing blind in down direction, used in while() loop in SlidingDownThread
     private val actionDownUpFlag = AtomicBoolean(true) // variable to start/stop pushing blind in up direction, used in while() loop in SlidingUpThread
 
     companion object {
-        @SuppressLint("StaticFieldLeak") // Who cares ( ͡°﻿ ͜ʖ ͡°)
+        @SuppressLint("StaticFieldLeak") // it's better to not place views like that (in object), but in our case it won't leak any field, so I will allow myself to do it.
         var progressBar: ProgressBar? = null // The progressBar (loading animation) used when program starts and it's detecting UDP packets
-        var recyclerView: RecyclerView? = null
+        var recyclerView: RecyclerView? = null // Adapter goes here. Used in BlindsAdapter in order to suppress layout when user touches blind (so recycler view won't scroll horizontally when blind is being moved up/down (vertically))
+        var databaseHelper: DatabaseHelper? = null
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        initItems()
-        Thread(UDP(this)).start()
+        initViews()
+        initViewsListeners()
+        initDatabase()
+        Thread(UDP(this)).start() // Start listening for UDP packets
+    }
 
+    private fun initDatabase() {
+        databaseHelper = DatabaseHelper(this)
+        val cursor = databaseHelper!!.data
+        if (cursor.count > 0) {
+            while(cursor.moveToNext()) {
+                val blind = Blind(
+                    id = cursor.getInt(0),
+                    name = cursor.getString(1),
+                    itemProgression = cursor.getInt(2),
+                    ip = cursor.getString(3)
+                )
+                runOnUiThread {
+                    BlindsHandler.checkAndAdd(blind, "rola;")
+                }
+            }
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility") // Need to set on touch listener
+    private fun initViewsListeners(): Unit {
         arrowDropDown?.let {
             arrowDropDown!!.setOnTouchListener { view, motionEvent ->
                 val slidingDownThread = Thread(object: Runnable {
@@ -104,52 +128,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        optionsButton?.let {
+            optionsButton!!.setOnClickListener {
+                val intent = Intent(this, OptionsActivity::class.java)
+                startActivity(intent)
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+            }
+        }
     }
 
-    private fun initItems(): Unit {
+    @Synchronized private fun initViews(): Unit {
         progressBar = findViewById(R.id.progressBar)
         arrowDropDown = findViewById(R.id.arrowDropDown)
         arrowDropUp = findViewById(R.id.arrowDropUp)
         setButton = findViewById(R.id.setButton)
+        optionsButton = findViewById(R.id.optionsButton)
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView?.adapter = BlindsAdapter(BlindsHandler.blindsList)
-    }
-}
-
-class SendShouldBe(val context: Context): AsyncTask<String, Unit, Unit>() {
-    private var progressDialog = ProgressDialog(context)
-
-    override fun onPreExecute() {
-        super.onPreExecute()
-        progressDialog.setTitle("Setting blinds...")
-        progressDialog.setCancelable(false)
-        progressDialog.show()
-    }
-
-    override fun doInBackground(vararg p0: String?) {
-        Thread.sleep(1000) // Loading... (｡◕‿‿◕｡)
-        for (blind in BlindsHandler.blindsList) {
-            val call = BlindsServiceBuilder(blind.ip!!).getService().shouldBe(blind.blindCoverPercentage.toString())
-            call.enqueue(object : Callback<ResponseBody> {
-                override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {
-                    Toast.makeText(context, t.message, Toast.LENGTH_LONG).show()
-                }
-
-                override fun onResponse(
-                    call: retrofit2.Call<ResponseBody>,
-                    response: Response<ResponseBody>
-                ) {
-                    Toast.makeText(context, response.body()?.string(), Toast.LENGTH_LONG).show()
-                }
-            })
-        }
-    }
-
-    override fun onPostExecute(result: Unit?) {
-        super.onPostExecute(result)
-        if (progressDialog.isShowing) {
-            progressDialog.dismiss()
-        }
     }
 }
 

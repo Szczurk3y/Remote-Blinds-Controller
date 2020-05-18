@@ -13,7 +13,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/item_blind"
-        android:id="@+id/percentageTextView"/>
+        android:id="@+id/blind_name"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/item_blind"
         android:layout_width="190dp"

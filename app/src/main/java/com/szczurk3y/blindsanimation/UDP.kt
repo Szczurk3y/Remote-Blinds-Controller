@@ -11,8 +11,10 @@ import java.net.DatagramSocket
 import java.net.InetAddress
 
 class UDP(val activity: Activity): Runnable {
-    private val PORT = 10107
-    private val HOST = "192.168.1.255"
+    companion object {
+        const val PORT = 10107
+        const val HOST = "192.168.1.255"
+    }
 
     override fun run() {
         try {
@@ -23,10 +25,16 @@ class UDP(val activity: Activity): Runnable {
             while (true) {
                 datagramSocket.receive(datagramPacket)
                 val text: String? = String(messageBuffer, 0, datagramPacket.length)
-                val ip: InetAddress? = datagramPacket.address
-                val blind = Blind(udpPacketText = text, ip = ip)
+                val ip: String? = datagramPacket.address.toString().removeRange(0..0)
+                val blind = Blind(
+                    id = BlindsHandler.blindsList.size,
+                    name = ip,
+                    itemProgression = BlindsHandler.blindsList.size,
+                    ip = ip.toString()
+                )
+                Toast.makeText(activity, text, Toast.LENGTH_LONG).show()
                 activity.runOnUiThread {
-                    BlindsHandler.checkAndAdd(blind)
+                    BlindsHandler.checkAndAdd(blind, text)
                 }
             }
         } catch (e: Exception) {

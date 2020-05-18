@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_blind.view.*
 import kotlin.math.floor
-import kotlin.properties.ReadWriteProperty
 
 class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<BlindsAdapter.ViewHolder>() {
 
@@ -51,8 +50,8 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val blind = itemView.blind
         val tactileLayout = itemView.tactileLayout
+        val blind = itemView.blind
         val blindRelativeLayout = itemView.blindRelativeLayout
     }
 }
