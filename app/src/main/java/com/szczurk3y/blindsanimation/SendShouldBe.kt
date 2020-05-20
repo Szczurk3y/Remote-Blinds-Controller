@@ -1,5 +1,6 @@
 package com.szczurk3y.blindsanimation
 
+import Retrofit.ServiceBuilder
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
@@ -20,7 +21,7 @@ class SendShouldBe(val context: Context): AsyncTask<String, Unit, Unit>() {
 
     override fun doInBackground(vararg p0: String?) {
         Thread.sleep(1000) // Loading... (｡◕‿‿◕｡)
-        for (blind in BlindsHandler.blindsList) {
+        for (blind in Handler.blindsList) {
             val call = ServiceBuilder(blind.ip!!).getService().shouldBe(blind.blindCoverPercentage.toString())
             call.enqueue(object : Callback<ResponseBody> {
                 override fun onFailure(call: retrofit2.Call<ResponseBody>, t: Throwable) {

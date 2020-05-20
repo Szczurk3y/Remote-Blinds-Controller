@@ -1,4 +1,4 @@
-package com.szczurk3y.blindsanimation
+package Retrofit
 
 import okhttp3.ResponseBody
 import retrofit2.Call

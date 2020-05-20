@@ -1,4 +1,4 @@
-package com.szczurk3y.blindsanimation
+package Adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,6 +6,10 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.szczurk3y.blindsanimation.Blind
+import com.szczurk3y.blindsanimation.Handler
+import Activities.MainActivity
+import com.szczurk3y.blindsanimation.R
 import kotlinx.android.synthetic.main.item_blind.view.*
 import kotlin.math.floor
 
@@ -46,7 +50,7 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        BlindsHandler.activeBlind = holder.layoutPosition
+        Handler.activeBlind = holder.layoutPosition
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

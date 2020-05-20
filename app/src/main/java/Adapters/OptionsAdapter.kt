@@ -1,13 +1,13 @@
-package com.szczurk3y.blindsanimation
+package Adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.szczurk3y.blindsanimation.Blind
+import com.szczurk3y.blindsanimation.R
 import kotlinx.android.synthetic.main.item_option.view.*
-import java.util.*
 
 class OptionsAdapter(var optionsList: MutableList<Blind>) : RecyclerView.Adapter<OptionsAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

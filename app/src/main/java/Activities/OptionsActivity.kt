@@ -1,13 +1,13 @@
-package com.szczurk3y.blindsanimation
+package Activities
 
+import Adapters.OptionsAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import android.widget.Toast
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_options.*
+import com.szczurk3y.blindsanimation.Handler
+import com.szczurk3y.blindsanimation.R
 import java.util.*
 
 class OptionsActivity : AppCompatActivity() {
@@ -25,7 +25,8 @@ class OptionsActivity : AppCompatActivity() {
     private fun initItems(): Unit {
         backButton = findViewById(R.id.backButton)
         optionsRecyclerView = findViewById(R.id.optionsRecyclerView)
-        optionsRecyclerView?.adapter = OptionsAdapter(BlindsHandler.blindsList)
+        optionsRecyclerView?.adapter =
+            OptionsAdapter(Handler.blindsList)
         val touchHelper = ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0) {
             override fun onMove(
                 recyclerView: RecyclerView,
@@ -35,13 +36,13 @@ class OptionsActivity : AppCompatActivity() {
                 val positionDragged = dragged.adapterPosition
                 val positionTarget = target.adapterPosition
 
-                Collections.swap(BlindsHandler.blindsList, positionDragged, positionTarget)
+                Collections.swap(Handler.blindsList, positionDragged, positionTarget)
                 optionsRecyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
                 return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                BlindsHandler.blindsList.removeAt(viewHolder.adapterPosition)
+                Handler.blindsList.removeAt(viewHolder.adapterPosition)
             }
         })
         touchHelper.attachToRecyclerView(optionsRecyclerView)

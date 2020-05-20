@@ -1,29 +1,17 @@
-package com.szczurk3y.blindsanimation
+package Activities
 
+import Adapters.BlindsAdapter
 import android.annotation.SuppressLint
-import android.app.ProgressDialog
-import android.content.Context
 import android.content.Intent
-import android.os.AsyncTask
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.StrictMode
-import android.telecom.Call
-import android.util.Log
 import android.view.MotionEvent
-import android.view.View
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
+import com.szczurk3y.blindsanimation.*
 import de.hdodenhof.circleimageview.CircleImageView
-import okhttp3.ResponseBody
-import retrofit2.Callback
-import retrofit2.Response
-import java.lang.Exception
-import java.net.*
-import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.floor
-import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
     private var arrowDropDown: CircleImageView? = null // Arrow view to push blind in down direction
@@ -44,10 +32,18 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        BlindsHandler.blindsList.add(Blind(1, "1", 1, "1"))
-        BlindsHandler.blindsList.add(Blind(2, "2", 1, "2"))
-        BlindsHandler.blindsList.add(Blind(3, "3", 1, "3"))
-        BlindsHandler.blindsList.add(Blind(4, "4", 1, "4"))
+//        Handler.blindsList.add(
+//            Blind(1, "1", 1, "1")
+//        )
+//        Handler.blindsList.add(
+//            Blind(2, "2", 1, "2")
+//        )
+//        Handler.blindsList.add(
+//            Blind(3, "3", 1, "3")
+//        )
+//        Handler.blindsList.add(
+//            Blind(4, "4", 1, "4")
+//        )
         initViews()
         initViewsListeners()
         initDatabase()
@@ -55,7 +51,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initDatabase() {
-        databaseHelper = DatabaseHelper(this)
+        databaseHelper =
+            DatabaseHelper(this)
         val cursor = databaseHelper!!.data
         if (cursor.count > 0) {
             while(cursor.moveToNext()) {
@@ -66,7 +63,11 @@ class MainActivity : AppCompatActivity() {
                     ip = cursor.getString(3)
                 )
                 runOnUiThread {
-                    BlindsHandler.checkAndAdd(blind, "rola;", true)
+                    Handler.checkAndAdd(
+                        blind,
+                        "rola;",
+                        true
+                    )
                 }
             }
         }
@@ -79,11 +80,15 @@ class MainActivity : AppCompatActivity() {
                 val slidingDownThread = Thread(object: Runnable {
                     override fun run() {
                         actionDownDownFlag.set(true)
-                        while (actionDownDownFlag.get()) {
-                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height < BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height) {
-                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + 1
-                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blindCoverPercentage = floor(((BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height) / BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
-                                Thread.sleep(3)
+                        if (Handler.blindsList.size > 0) {
+                            while (actionDownDownFlag.get()) {
+                                if (Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height < Handler.blindsList[Handler.activeBlind].blindRelativeLayout!!.height) {
+                                    Handler.blindsList[Handler.activeBlind].blind!!.y =
+                                        Handler.blindsList[Handler.activeBlind].blind!!.y + 1
+                                    Handler.blindsList[Handler.activeBlind].blindCoverPercentage =
+                                        floor(((Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height) / Handler.blindsList[Handler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
+                                    Thread.sleep(3)
+                                }
                             }
                         }
                     }
@@ -105,11 +110,13 @@ class MainActivity : AppCompatActivity() {
                 val slidingUpthread = Thread(object: Runnable {
                     override fun run() {
                         actionDownUpFlag.set(true)
-                        while (actionDownUpFlag.get()) {
-                            if (BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height > 1) {
-                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y = BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y - 1
-                                BlindsHandler.blindsList[BlindsHandler.activeBlind].blindCoverPercentage = floor(((BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.y + BlindsHandler.blindsList[BlindsHandler.activeBlind].blind!!.height) / BlindsHandler.blindsList[BlindsHandler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
-                                Thread.sleep(3)
+                        if (Handler.blindsList.size > 0) {
+                            while (actionDownUpFlag.get()) {
+                                if (Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height > 1) {
+                                    Handler.blindsList[Handler.activeBlind].blind!!.y = Handler.blindsList[Handler.activeBlind].blind!!.y - 1
+                                    Handler.blindsList[Handler.activeBlind].blindCoverPercentage = floor(((Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height) / Handler.blindsList[Handler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()
+                                    Thread.sleep(3)
+                                }
                             }
                         }
                     }
@@ -128,7 +135,9 @@ class MainActivity : AppCompatActivity() {
 
         setButton?.let {
             setButton!!.setOnClickListener {
-                SendShouldBe(this).execute()
+                if (Handler.blindsList.size > 0) {
+                    SendShouldBe(this).execute()
+                }
             }
         }
 
@@ -136,19 +145,28 @@ class MainActivity : AppCompatActivity() {
             optionsButton!!.setOnClickListener {
                 val intent = Intent(this, OptionsActivity::class.java)
                 startActivity(intent)
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                overridePendingTransition(
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
+                )
             }
         }
     }
 
     private fun initViews(): Unit {
-        progressBar = findViewById(R.id.progressBar)
+        progressBar = findViewById(
+            R.id.progressBar
+        )
         arrowDropDown = findViewById(R.id.arrowDropDown)
         arrowDropUp = findViewById(R.id.arrowDropUp)
         setButton = findViewById(R.id.setButton)
         optionsButton = findViewById(R.id.optionsButton)
-        recyclerView = findViewById(R.id.recyclerView)
-        recyclerView?.adapter = BlindsAdapter(BlindsHandler.blindsList)
+        recyclerView = findViewById(
+            R.id.recyclerView
+        )
+        recyclerView?.adapter = BlindsAdapter(
+            Handler.blindsList
+        )
     }
 }
 

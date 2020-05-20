@@ -1,7 +1,6 @@
-package com.szczurk3y.blindsanimation
+package Retrofit
 
 import retrofit2.Retrofit
-import java.net.InetAddress
 
 class ServiceBuilder(val BASE_URL: String) {
     private var retrofit: Retrofit = Retrofit.Builder()
