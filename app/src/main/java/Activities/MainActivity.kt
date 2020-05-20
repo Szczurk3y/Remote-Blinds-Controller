@@ -44,6 +44,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        BlindsHandler.blindsList.add(Blind(1, "1", 1, "1"))
+        BlindsHandler.blindsList.add(Blind(2, "2", 1, "2"))
+        BlindsHandler.blindsList.add(Blind(3, "3", 1, "3"))
+        BlindsHandler.blindsList.add(Blind(4, "4", 1, "4"))
         initViews()
         initViewsListeners()
         initDatabase()
@@ -62,7 +66,7 @@ class MainActivity : AppCompatActivity() {
                     ip = cursor.getString(3)
                 )
                 runOnUiThread {
-                    BlindsHandler.checkAndAdd(blind, "rola;")
+                    BlindsHandler.checkAndAdd(blind, "rola;", true)
                 }
             }
         }
@@ -137,7 +141,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Synchronized private fun initViews(): Unit {
+    private fun initViews(): Unit {
         progressBar = findViewById(R.id.progressBar)
         arrowDropDown = findViewById(R.id.arrowDropDown)
         arrowDropUp = findViewById(R.id.arrowDropUp)
