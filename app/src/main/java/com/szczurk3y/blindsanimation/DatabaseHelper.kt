@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 
 
 class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, 1) {
@@ -28,7 +29,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     override fun onCreate(db: SQLiteDatabase?) {
         db!!.execSQL("""
             CREATE TABLE $TABLE_NAME(
-            $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, 
+            $COLUMN_ID INTEGER PRIMARY KEY, 
             $COLUMN_NAME TEXT, 
             $COLUMN_ITEM_PROGRESSION INTEGER, 
             $COLUMN_IP TEXT)
@@ -62,6 +63,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun deleteBlind(blind: Blind): Int {
         val db = this.writableDatabase
+        Log.i("DELETE_BLIND", blind.toString())
         return db.delete(TABLE_NAME, "ID=?", arrayOf(blind.id.toString()))
     }
 }

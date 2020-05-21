@@ -1,6 +1,8 @@
 package Activities
 
 import Adapters.BlindsAdapter
+import AsyncTask.SendShouldBe
+import AsyncTask.UDP
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -25,14 +27,11 @@ class MainActivity : AppCompatActivity() {
         @SuppressLint("StaticFieldLeak") // it's better to not place views like that (in object), but in our case it won't leak any field, so I will allow myself to do it.
         var progressBar: ProgressBar? = null // The progressBar (loading animation) used when program starts and it's detecting UDP packets
         var recyclerView: RecyclerView? = null // Adapter goes here. Used in BlindsAdapter in order to suppress layout when user touches blind (so recycler view won't scroll horizontally when blind is being moved up/down (vertically))
-        var databaseHelper: DatabaseHelper? = null
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-
 
 //        Handler.blindsList.add(
 //            Blind(1, "1", 1, "1")
@@ -49,15 +48,23 @@ class MainActivity : AppCompatActivity() {
         initViews()
         initViewsListeners()
         initDatabase()
+    }
+
+    override fun onResume() {
+        super.onResume()
         Thread(UDP(this)).start() // Start listening for UDP packets
+        runOnUiThread {
+            Handler.refresh()
+        }
     }
 
     private fun initDatabase() {
-        databaseHelper =
+        Handler.databaseHelper =
             DatabaseHelper(this)
-        val cursor = databaseHelper!!.data
+        val cursor = Handler.databaseHelper!!.data
         if (cursor.count > 0) {
             while(cursor.moveToNext()) {
+                Toast.makeText(this, cursor.getInt(0).toString(), Toast.LENGTH_LONG).show()
                 val blind = Blind(
                     id = cursor.getInt(0),
                     name = cursor.getString(1),

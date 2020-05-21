@@ -1,16 +1,13 @@
-package com.szczurk3y.blindsanimation
+package AsyncTask
 
 import android.app.Activity
-import android.app.PendingIntent.getBroadcast
 import android.content.Context
 import android.content.Context.WIFI_SERVICE
 import android.net.wifi.WifiManager
-import android.os.AsyncTask
 import android.text.format.Formatter
 import android.util.Log
-import android.view.View
-import android.widget.Toast
-import java.io.IOException
+import com.szczurk3y.blindsanimation.Blind
+import com.szczurk3y.blindsanimation.Handler
 import java.lang.Exception
 import java.net.*
 
@@ -29,23 +26,29 @@ class UDP(val activity: Activity): Runnable {
         Log.i("Broadcast:", HOST)
         if (HOST != "Disconnected") {
             try {
+                val messageBuffer = ByteArray(1024)
+                val datagramSocket = DatagramSocket(
+                    PORT, InetAddress.getByName(
+                        HOST
+                    ))
+                val datagramPacket = DatagramPacket(messageBuffer, messageBuffer.size)
                 while (true) {
-                    val messageBuffer = ByteArray(1024)
-                    val datagramSocket = DatagramSocket(PORT, InetAddress.getByName(HOST))
-                    val datagramPacket = DatagramPacket(messageBuffer, messageBuffer.size)
-                    while (true) {
-                        datagramSocket.receive(datagramPacket)
-                        val text: String? = String(messageBuffer, 0, datagramPacket.length)
-                        val ip: String? = datagramPacket.address.toString().removeRange(0..0)
-                        val blind = Blind(
-                            id = Handler.blindsList.size,
-                            name = ip,
-                            itemProgression = Handler.blindsList.size,
-                            ip = ip.toString()
+                    datagramSocket.receive(datagramPacket)
+                    val text: String? = String(messageBuffer, 0, datagramPacket.length)
+                    val ip: String? = datagramPacket.address.toString().removeRange(0..0)
+                    Log.i("ID:", Handler.blindsList.size.toString())
+                    val blind = Blind(
+                        id = Handler.blindsList.size + 1,
+                        name = ip,
+                        itemProgression = Handler.blindsList.size,
+                        ip = ip.toString()
+                    )
+                    activity.runOnUiThread {
+                        Handler.checkAndAdd(
+                            blind,
+                            text,
+                            false
                         )
-                        activity.runOnUiThread {
-                            Handler.checkAndAdd(blind, text, false)
-                        }
                     }
                 }
             } catch (e: Exception) {

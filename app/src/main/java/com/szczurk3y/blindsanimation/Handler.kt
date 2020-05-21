@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.RelativeLayout
 
 data class Blind(
-    var id: Int?,
+    var id: Int? = null,
     var name: String?,
     var itemProgression: Int?,
     var ip: String?,
@@ -19,6 +19,7 @@ data class Blind(
 object Handler {
     var activeBlind: Int = 0
     val blindsList = mutableListOf<Blind>()
+    var databaseHelper: DatabaseHelper? = null
 
     fun checkAndAdd(blind: Blind, udpPacketText: String?, isAlreadyStored: Boolean): Boolean {
         Log.i("Check", "Check!" + blind)
@@ -29,20 +30,19 @@ object Handler {
         }
         if (isMatching) {
             blindsList.add(blind)
+            if (!isAlreadyStored) databaseHelper?.insertBlind(blind)
             refresh()
-        }
-        if (!isAlreadyStored) {
-            MainActivity.databaseHelper?.insertBlind(blind)
         }
         return isMatching
     }
 
     fun remove(blind: Blind) {
         blindsList.remove(blind)
+        databaseHelper?.deleteBlind(blind)
         refresh()
     }
 
-    private fun refresh() {
+    fun refresh() {
         Log.i("Refresh", "Refresh!" + blindsList.size)
         if (blindsList.size > 0) {
             MainActivity.progressBar?.visibility = View.GONE

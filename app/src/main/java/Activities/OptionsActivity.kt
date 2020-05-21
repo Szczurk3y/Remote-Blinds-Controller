@@ -3,8 +3,11 @@ package Activities
 import Adapters.OptionsAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.RecyclerView
 import com.szczurk3y.blindsanimation.Handler
 import com.szczurk3y.blindsanimation.R
@@ -42,7 +45,15 @@ class OptionsActivity : AppCompatActivity() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Handler.blindsList.removeAt(viewHolder.adapterPosition)
+                Handler.remove(Handler.blindsList.get(viewHolder.adapterPosition))
+                Log.i("POSITION:", viewHolder.adapterPosition.toString())
+            }
+
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                return ItemTouchHelper.Callback.makeMovementFlags(0, LEFT or RIGHT )
             }
         })
         touchHelper.attachToRecyclerView(optionsRecyclerView)

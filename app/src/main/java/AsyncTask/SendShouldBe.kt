@@ -1,10 +1,11 @@
-package com.szczurk3y.blindsanimation
+package AsyncTask
 
 import Retrofit.ServiceBuilder
 import android.app.ProgressDialog
 import android.content.Context
 import android.os.AsyncTask
 import android.widget.Toast
+import com.szczurk3y.blindsanimation.Handler
 import okhttp3.ResponseBody
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +33,7 @@ class SendShouldBe(val context: Context): AsyncTask<String, Unit, Unit>() {
                     call: retrofit2.Call<ResponseBody>,
                     response: Response<ResponseBody>
                 ) {
-                    Toast.makeText(context, response.body()?.string(), Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "success!", Toast.LENGTH_LONG).show()
                 }
             })
         }
