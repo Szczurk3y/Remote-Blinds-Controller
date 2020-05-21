@@ -4,7 +4,7 @@ import retrofit2.Retrofit
 
 class ServiceBuilder(val BASE_URL: String) {
     private var retrofit: Retrofit = Retrofit.Builder()
-        .baseUrl("http:/${this.BASE_URL}:10107/")
+        .baseUrl("http:/${this.BASE_URL}:80/")
         .build()
 
     fun getService(): Service {
