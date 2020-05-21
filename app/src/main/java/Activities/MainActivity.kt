@@ -32,6 +32,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
+
 //        Handler.blindsList.add(
 //            Blind(1, "1", 1, "1")
 //        )

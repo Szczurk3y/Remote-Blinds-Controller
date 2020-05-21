@@ -11,7 +11,7 @@ data class Blind(
     var name: String?,
     var itemProgression: Int?,
     var ip: String?,
-    var blindCoverPercentage: Int? =  null,
+    var blindCoverPercentage: Int = 100,
     var blind: ImageView? = null,
     var blindRelativeLayout: RelativeLayout? = null
 )
