@@ -2,7 +2,7 @@ package Activities
 
 import Adapters.BlindsAdapter
 import AsyncTask.SendShouldBe
-import AsyncTask.UDP
+import Services.UDP
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
 //        Handler.blindsList.add(
 //            Blind(1, "1", 1, "1")
 //        )
@@ -48,14 +47,6 @@ class MainActivity : AppCompatActivity() {
         initViews()
         initViewsListeners()
         initDatabase()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Thread(UDP(this)).start() // Start listening for UDP packets
-        runOnUiThread {
-            Handler.refresh()
-        }
     }
 
     private fun initDatabase() {
@@ -176,6 +167,19 @@ class MainActivity : AppCompatActivity() {
         recyclerView?.adapter = BlindsAdapter(
             Handler.blindsList
         )
+    }
+
+    override fun onResume() {
+        super.onResume()
+        UDP(this).execute()
+        runOnUiThread {
+            Handler.refresh()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(this, UDP::class.java))
     }
 }
 
