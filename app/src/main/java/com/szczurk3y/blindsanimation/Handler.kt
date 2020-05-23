@@ -1,10 +1,13 @@
 package com.szczurk3y.blindsanimation
 
 import Activities.MainActivity
+import Activities.OptionsActivity
+import Adapters.BlindsAdapter
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import java.util.*
 
 data class Blind(
     var id: Int? = null,
@@ -26,7 +29,7 @@ object Handler {
         var isMatching = true
         if (udpPacketText != "rola;") isMatching = false
         blindsList.forEach {
-            if (it.ip == blind.ip) isMatching = false
+//            if (it.ip == blind.ip) isMatching = false
         }
         if (isMatching) {
             blindsList.add(blind)
@@ -36,10 +39,24 @@ object Handler {
         return isMatching
     }
 
-    fun remove(blind: Blind) {
-        blindsList.remove(blind)
-        databaseHelper?.deleteBlind(blind)
+    fun onSwiped(position: Int, id: Int) {
+        Log.i("All Blinds:", blindsList.toString())
+        Log.i("Removed Position:", position.toString())
+        Log.i("Removed Blind:", blindsList.get(position).toString())
+        blindsList.removeAt(position)
+        databaseHelper?.deleteBlind(id)
+        MainActivity.recyclerView?.adapter?.notifyItemRemoved(position)
+        OptionsActivity.optionsRecyclerView?.adapter?.notifyDataSetChanged()
         refresh()
+    }
+
+    fun renameBlind(position: Int, newName: String) {
+        blindsList[position].name = newName
+        databaseHelper?.renameBlind(blindsList[position], newName)
+    }
+
+    fun replaceBlinds(positionDragged: Int, positionTarget: Int) {
+        databaseHelper?.replaceBlinds(blindsList[positionDragged], blindsList[positionTarget])
     }
 
     fun refresh() {
@@ -47,7 +64,9 @@ object Handler {
         if (blindsList.size > 0) {
             MainActivity.progressBar?.visibility = View.GONE
             MainActivity.recyclerView?.visibility = View.VISIBLE
-            MainActivity.recyclerView?.adapter?.notifyItemChanged(blindsList.size, blindsList)
+            MainActivity.recyclerView?.adapter?.notifyDataSetChanged()
+            OptionsActivity.optionsRecyclerView?.adapter?.notifyDataSetChanged()
+//            MainActivity.recyclerView?.adapter?.notifyItemChanged(blindsList.size, blindsList)
 
         } else if (blindsList.size < 1) {
             MainActivity.progressBar?.visibility = View.VISIBLE

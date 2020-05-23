@@ -9,11 +9,11 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toTopOf="@id/item_blind"
-        android:id="@+id/blind_name"/>
+        android:id="@+id/blind_name"
+        android:text="name"/>
     <androidx.cardview.widget.CardView
         android:id="@+id/item_blind"
         android:layout_width="190dp"

@@ -1,17 +1,11 @@
-package Services
+package AsyncTask
 
 import android.app.Activity
-import android.app.Service
-import android.content.Context
 import android.content.Context.WIFI_SERVICE
-import android.content.Intent
 import android.net.wifi.WifiManager
 import android.os.AsyncTask
-import android.os.IBinder
-import android.os.Looper
 import android.text.format.Formatter
 import android.util.Log
-import androidx.core.content.ContextCompat.getSystemService
 import com.szczurk3y.blindsanimation.Blind
 import com.szczurk3y.blindsanimation.Handler
 import java.lang.Exception
@@ -19,7 +13,7 @@ import java.net.*
 
 class UDP(val activity: Activity): AsyncTask<Unit, Unit, Unit>() {
     companion object {
-        private const val PORT = 10107
+        const val PORT = 10107
         private val messageBuffer = ByteArray(1024)
         private var datagramPacket: DatagramPacket = DatagramPacket(messageBuffer, messageBuffer.size)
         private var datagramSocket: DatagramSocket = DatagramSocket(PORT)
@@ -37,10 +31,12 @@ class UDP(val activity: Activity): AsyncTask<Unit, Unit, Unit>() {
         if (isDeviceConnected()) {
             try {
                 while (true) {
-                    datagramSocket.receive(datagramPacket)
+                    datagramSocket.receive(
+                        datagramPacket
+                    )
                     val text: String? = String(messageBuffer, 0, datagramPacket.length)
                     val ip: String? = datagramPacket.address.toString().removeRange(0..0)
-                    Log.i("ID:", Handler.blindsList.size.toString())
+                    Log.i("ID:", (Handler.blindsList.size + 1).toString())
                     val blind = Blind(
                         id = Handler.blindsList.size + 1,
                         name = ip,

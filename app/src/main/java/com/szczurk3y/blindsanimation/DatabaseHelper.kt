@@ -49,21 +49,40 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.insert(TABLE_NAME, null, contentValues)
     }
 
-    fun updateBlind(blind: Blind): Boolean {
+    fun replaceBlinds(draggedBlind: Blind, targetBlind: Blind): Boolean {
         val db = this.writableDatabase
-        val contentValues = ContentValues()
-        contentValues.put(COLUMN_ID, blind.id)
-        contentValues.put(COLUMN_NAME, blind.name)
-        contentValues.put(COLUMN_ITEM_PROGRESSION, blind.itemProgression)
-        contentValues.put(COLUMN_IP, blind.ip.toString())
-        db.update(TABLE_NAME, contentValues, "ID=?", arrayOf(blind.id.toString()))
+        val draggedContentValues = ContentValues()
+        val targetContentValues = ContentValues()
+
+        draggedContentValues.put(COLUMN_NAME, draggedBlind.name)
+        draggedContentValues.put(COLUMN_ITEM_PROGRESSION, draggedBlind.itemProgression)
+        draggedContentValues.put(COLUMN_IP, draggedBlind.ip.toString())
+
+        targetContentValues.put(COLUMN_NAME, targetBlind.name)
+        targetContentValues.put(COLUMN_ITEM_PROGRESSION, targetBlind.itemProgression)
+        targetContentValues.put(COLUMN_IP, targetBlind.ip.toString())
+
+        // Dragged -> Target
+        db.update(TABLE_NAME, draggedContentValues, "ID=?", arrayOf(targetBlind.id.toString()))
+        // Target -> Dragged
+        db.update(TABLE_NAME, targetContentValues, "ID=?", arrayOf(draggedBlind.id.toString()))
 
         return true
     }
 
-    fun deleteBlind(blind: Blind): Int {
+    fun renameBlind(blind: Blind, newName: String) {
         val db = this.writableDatabase
-        Log.i("DELETE_BLIND", blind.toString())
-        return db.delete(TABLE_NAME, "ID=?", arrayOf(blind.id.toString()))
+        val contentValues = ContentValues()
+        contentValues.put(COLUMN_ID, blind.id)
+        contentValues.put(COLUMN_NAME, newName)
+        contentValues.put(COLUMN_ITEM_PROGRESSION, blind.itemProgression)
+        contentValues.put(COLUMN_IP, blind.ip.toString())
+        db.update(TABLE_NAME, contentValues, "ID=?", arrayOf(blind.id.toString()))
+    }
+
+    fun deleteBlind(id: Int): Int {
+        val db = this.writableDatabase
+        Log.i("DELETE_BLIND", id.toString())
+        return db.delete(TABLE_NAME, "ID=?", arrayOf(id.toString()))
     }
 }

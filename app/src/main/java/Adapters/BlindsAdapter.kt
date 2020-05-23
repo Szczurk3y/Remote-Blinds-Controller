@@ -28,6 +28,7 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         blindsList[position].blind = holder.blind
         blindsList[position].blindRelativeLayout = holder.blindRelativeLayout
+        holder.blind_name.text = blindsList[position].name
         holder.tactileLayout.setOnTouchListener {view, motionEvent ->
             when(motionEvent.action) {
                 MotionEvent.ACTION_MOVE -> {
@@ -57,5 +58,6 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
         val tactileLayout = itemView.tactileLayout
         val blind = itemView.blind
         val blindRelativeLayout = itemView.blindRelativeLayout
+        val blind_name = itemView.blind_name
     }
 }

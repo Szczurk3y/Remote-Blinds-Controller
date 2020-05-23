@@ -2,11 +2,12 @@ package Activities
 
 import Adapters.BlindsAdapter
 import AsyncTask.SendShouldBe
-import Services.UDP
+import AsyncTask.UDP
 import android.annotation.SuppressLint
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.MotionEvent
 import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
@@ -32,21 +33,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-//        Handler.blindsList.add(
-//            Blind(1, "1", 1, "1")
-//        )
-//        Handler.blindsList.add(
-//            Blind(2, "2", 1, "2")
-//        )
-//        Handler.blindsList.add(
-//            Blind(3, "3", 1, "3")
-//        )
-//        Handler.blindsList.add(
-//            Blind(4, "4", 1, "4")
-//        )
+
+        UDP(this).execute()
         initViews()
         initViewsListeners()
         initDatabase()
+
+//        Handler.checkAndAdd(Blind(1, "1", 1, "1"), "rola;", false)
+//        Handler.checkAndAdd(Blind(2, "2", 2, "2"), "rola;", false)
+//        Handler.checkAndAdd(Blind(3, "3", 3, "3"), "rola;", false)
+//        Handler.checkAndAdd(Blind(4, "4", 4, "4"), "rola;", false)
     }
 
     private fun initDatabase() {
@@ -55,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         val cursor = Handler.databaseHelper!!.data
         if (cursor.count > 0) {
             while(cursor.moveToNext()) {
-                Toast.makeText(this, cursor.getInt(0).toString(), Toast.LENGTH_LONG).show()
                 val blind = Blind(
                     id = cursor.getInt(0),
                     name = cursor.getString(1),
@@ -112,6 +107,7 @@ class MainActivity : AppCompatActivity() {
                         actionDownUpFlag.set(true)
                         if (Handler.blindsList.size > 0) {
                             while (actionDownUpFlag.get()) {
+                                Log.i("Arrow blind:", Handler.blindsList.toString())
                                 if (Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height > 1) {
                                     Handler.blindsList[Handler.activeBlind].blind!!.y = Handler.blindsList[Handler.activeBlind].blind!!.y - 1
                                     Handler.blindsList[Handler.activeBlind].blindCoverPercentage = floor(((Handler.blindsList[Handler.activeBlind].blind!!.y + Handler.blindsList[Handler.activeBlind].blind!!.height) / Handler.blindsList[Handler.activeBlind].blindRelativeLayout!!.height * 100).toDouble()).toInt()

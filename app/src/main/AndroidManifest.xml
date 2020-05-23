@@ -19,7 +19,7 @@
         android:usesCleartextTraffic="true"
         tools:ignore="GoogleAppIndexingWarning">
         <service
-            android:name="Services.UDP"
+            android:name="AsyncTask.UDP"
             android:enabled="true"
             android:exported="true" />
 
