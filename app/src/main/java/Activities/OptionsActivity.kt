@@ -1,5 +1,6 @@
 package Activities
 
+import Adapters.BlindsAdapter
 import Adapters.OptionsAdapter
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,45 +31,19 @@ class OptionsActivity : AppCompatActivity() {
     private fun initItems(): Unit {
         backButton = findViewById(R.id.backButton)
         optionsRecyclerView = findViewById(R.id.optionsRecyclerView)
-        optionsRecyclerView?.adapter =
-            OptionsAdapter(Handler.blindsList)
+        optionsRecyclerView?.adapter = OptionsAdapter(Handler.blindsList)
         val touchHelper = ItemTouchHelper(object: ItemTouchHelper.SimpleCallback(UP or DOWN, RIGHT) {
-            var dragFrom = -1
-            var dragTo = -1
-
             override fun onMove(
                 recyclerView: RecyclerView,
                 dragged: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                val positionDragged = dragged.adapterPosition
-                val positionTarget = target.adapterPosition
-                if (dragFrom == -1) {
-                    dragFrom = positionDragged
-                }
-                dragTo = positionTarget
-                Collections.swap(Handler.blindsList, positionDragged, positionTarget)
-                optionsRecyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
-                MainActivity.recyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
+                Handler.onOptionMoved(dragged.adapterPosition, target.adapterPosition)
                 return true
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Handler.onSwiped(viewHolder.adapterPosition, Handler.blindsList[viewHolder.adapterPosition].id!!)
-            }
-
-            override fun clearView(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder
-            ) {
-                super.clearView(recyclerView, viewHolder)
-                if (dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
-                    Handler.replaceBlinds(dragFrom, dragTo)
-                    Log.i("Drag From:", dragFrom.toString())
-                    Log.i("Drag To:", dragTo.toString())
-                }
-                dragTo = -1
-                dragFrom = -1
+                Handler.onOptionSwiped(viewHolder.adapterPosition, Handler.blindsList[viewHolder.adapterPosition].id!!)
             }
 
             override fun isItemViewSwipeEnabled(): Boolean {

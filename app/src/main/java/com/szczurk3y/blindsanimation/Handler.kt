@@ -39,20 +39,23 @@ object Handler {
         return isMatching
     }
 
-    fun onSwiped(position: Int, id: Int) {
-        Log.i("All Blinds:", blindsList.toString())
-        Log.i("Removed Position:", position.toString())
-        Log.i("Removed Blind:", blindsList.get(position).toString())
+    fun onOptionMoved(positionDragged: Int, positionTarget: Int) {
+        Collections.swap(blindsList, positionDragged, positionTarget)
+        OptionsActivity.optionsRecyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
+        MainActivity.recyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
+    }
+
+    fun onOptionSwiped(position: Int, id: Int) {
         blindsList.removeAt(position)
         databaseHelper?.deleteBlind(id)
         MainActivity.recyclerView?.adapter?.notifyItemRemoved(position)
-        OptionsActivity.optionsRecyclerView?.adapter?.notifyDataSetChanged()
-        refresh()
+        OptionsActivity.optionsRecyclerView?.adapter?.notifyItemRemoved(position)
     }
 
     fun renameBlind(position: Int, newName: String) {
         blindsList[position].name = newName
         databaseHelper?.renameBlind(blindsList[position], newName)
+        MainActivity.recyclerView?.adapter?.notifyItemChanged(position)
     }
 
     fun replaceBlinds(positionDragged: Int, positionTarget: Int) {
@@ -64,9 +67,6 @@ object Handler {
         if (blindsList.size > 0) {
             MainActivity.progressBar?.visibility = View.GONE
             MainActivity.recyclerView?.visibility = View.VISIBLE
-            MainActivity.recyclerView?.adapter?.notifyDataSetChanged()
-            OptionsActivity.optionsRecyclerView?.adapter?.notifyDataSetChanged()
-//            MainActivity.recyclerView?.adapter?.notifyItemChanged(blindsList.size, blindsList)
 
         } else if (blindsList.size < 1) {
             MainActivity.progressBar?.visibility = View.VISIBLE

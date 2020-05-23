@@ -1,5 +1,6 @@
 package Adapters
 
+import Activities.MainActivity
 import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
