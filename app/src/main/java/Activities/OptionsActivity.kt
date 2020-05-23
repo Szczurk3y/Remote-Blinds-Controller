@@ -49,6 +49,7 @@ class OptionsActivity : AppCompatActivity() {
                 dragTo = positionTarget
                 Collections.swap(Handler.blindsList, positionDragged, positionTarget)
                 optionsRecyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
+                MainActivity.recyclerView?.adapter?.notifyItemMoved(positionDragged, positionTarget)
                 return true
             }
 
