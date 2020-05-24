@@ -41,11 +41,6 @@ class MainActivity : AppCompatActivity() {
         initViews()
         initViewsListeners()
         initDatabase()
-
-//        Handler.checkAndAdd(Blind(1, "1", 1, "1"), "rola;", false)
-//        Handler.checkAndAdd(Blind(2, "2", 2, "2"), "rola;", false)
-//        Handler.checkAndAdd(Blind(3, "3", 3, "3"), "rola;", false)
-//        Handler.checkAndAdd(Blind(4, "4", 4, "4"), "rola;", false)
     }
 
     private fun initDatabase() {
@@ -176,14 +171,6 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         UDP(this).execute()
-        runOnUiThread {
-            Handler.refresh()
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        stopService(Intent(this, UDP::class.java))
     }
 }
 

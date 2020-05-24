@@ -28,12 +28,13 @@ object Handler {
         var isMatching = true
         if (udpPacketText != "rola;") isMatching = false
         blindsList.forEach {
-            if (it.ip == blind.ip) isMatching = false
+//            if (it.ip == blind.ip) isMatching = false
         }
         if (isMatching) {
             blindsList.add(blind)
             if (!isAlreadyStored) databaseHelper?.insertBlind(blind)
-            MainActivity.recyclerView?.adapter?.notifyItemInserted(blindsList.size)
+            MainActivity.recyclerView?.adapter?.notifyItemChanged(blindsList.size, blindsList)
+            OptionsActivity.optionsRecyclerView?.adapter?.notifyItemInserted(blindsList.size)
             refresh()
         }
         return isMatching
@@ -49,6 +50,7 @@ object Handler {
         blindsList.removeAt(position)
         databaseHelper?.deleteBlind(id)
         MainActivity.recyclerView?.adapter?.notifyItemRemoved(position)
+        refresh()
         OptionsActivity.optionsRecyclerView?.adapter?.notifyItemRemoved(position)
     }
 
@@ -62,7 +64,7 @@ object Handler {
         databaseHelper?.replaceBlinds(blindsList[positionDragged], blindsList[positionTarget])
     }
 
-    fun refresh() {
+    private fun refresh() {
         Log.i("Refresh", "Refresh!" + blindsList.size)
         if (blindsList.size > 0) {
             MainActivity.progressBar?.visibility = View.GONE
