@@ -36,7 +36,6 @@ class UDP(val activity: Activity): AsyncTask<Unit, Unit, Unit>() {
                     )
                     val text: String? = String(messageBuffer, 0, datagramPacket.length)
                     val ip: String? = datagramPacket.address.toString().removeRange(0..0)
-                    Log.i("ID:", (Handler.blindsList.size + 1).toString())
                     val blind = Blind(
                         id = Handler.blindsList.size + 1,
                         name = ip,

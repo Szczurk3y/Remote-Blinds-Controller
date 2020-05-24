@@ -25,15 +25,15 @@ object Handler {
     var databaseHelper: DatabaseHelper? = null
 
     fun checkAndAdd(blind: Blind, udpPacketText: String?, isAlreadyStored: Boolean): Boolean {
-        Log.i("Check", "Check!" + blind)
         var isMatching = true
         if (udpPacketText != "rola;") isMatching = false
         blindsList.forEach {
-//            if (it.ip == blind.ip) isMatching = false
+            if (it.ip == blind.ip) isMatching = false
         }
         if (isMatching) {
             blindsList.add(blind)
             if (!isAlreadyStored) databaseHelper?.insertBlind(blind)
+            MainActivity.recyclerView?.adapter?.notifyItemInserted(blindsList.size)
             refresh()
         }
         return isMatching

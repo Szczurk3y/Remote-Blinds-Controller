@@ -4,7 +4,10 @@ import Adapters.BlindsAdapter
 import AsyncTask.SendShouldBe
 import AsyncTask.UDP
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.content.Intent
+import android.os.AsyncTask
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -132,7 +135,12 @@ class MainActivity : AppCompatActivity() {
         setButton?.let {
             setButton!!.setOnClickListener {
                 if (Handler.blindsList.size > 0) {
-                    SendShouldBe(this).execute()
+                    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+                        SendShouldBe(this).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
+                    } else {
+                        SendShouldBe(this).execute()
+                    }
                 }
             }
         }

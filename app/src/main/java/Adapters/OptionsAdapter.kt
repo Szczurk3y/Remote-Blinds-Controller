@@ -28,21 +28,24 @@ class OptionsAdapter(var optionsList: MutableList<Blind>) : RecyclerView.Adapter
     @SuppressLint("ClickableViewAccessibility")
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.blindName.hint = optionsList[position].name
+        holder.blindName.isCursorVisible = false
         holder.blindName.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 holder.confirmButton.isEnabled = true
+                holder.blindName.isCursorVisible = true
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                holder.blindName.isCursorVisible = false
             }
-
         })
         holder.confirmButton.setOnClickListener {
             Handler.renameBlind(position, holder.blindName.text.toString())
             holder.blindName.hint = holder.blindName.text
             holder.blindName.setText("")
             holder.blindName.clearFocus()
+            holder.blindName.isCursorVisible = false
             holder.confirmButton.isEnabled = false
         }
     }
