@@ -1,11 +1,11 @@
-package com.szczurk3y.blindsanimation
+package Retrofit
 
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface BlindsService {
+interface Service {
     @GET("/shouldbe")
     fun shouldBe(
         @Query("PERCENT") percent: String

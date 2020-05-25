@@ -1,4 +1,4 @@
-package com.szczurk3y.blindsanimation
+package Adapters
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,9 +6,12 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.szczurk3y.blindsanimation.Blind
+import com.szczurk3y.blindsanimation.Handler
+import Activities.MainActivity
+import com.szczurk3y.blindsanimation.R
 import kotlinx.android.synthetic.main.item_blind.view.*
 import kotlin.math.floor
-import kotlin.properties.ReadWriteProperty
 
 class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<BlindsAdapter.ViewHolder>() {
 
@@ -25,6 +28,7 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         blindsList[position].blind = holder.blind
         blindsList[position].blindRelativeLayout = holder.blindRelativeLayout
+        holder.blind_name.text = blindsList[position].name
         holder.tactileLayout.setOnTouchListener {view, motionEvent ->
             when(motionEvent.action) {
                 MotionEvent.ACTION_MOVE -> {
@@ -47,12 +51,13 @@ class BlindsAdapter(var blindsList: MutableList<Blind>) : RecyclerView.Adapter<B
 
     override fun onViewAttachedToWindow(holder: ViewHolder) {
         super.onViewAttachedToWindow(holder)
-        BlindsHandler.activeBlind = holder.layoutPosition
+        Handler.activeBlind = holder.layoutPosition
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val blind = itemView.blind
         val tactileLayout = itemView.tactileLayout
+        val blind = itemView.blind
         val blindRelativeLayout = itemView.blindRelativeLayout
+        val blind_name = itemView.blind_name
     }
 }
