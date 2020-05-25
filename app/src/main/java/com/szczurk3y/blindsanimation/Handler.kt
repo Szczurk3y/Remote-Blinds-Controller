@@ -10,7 +10,7 @@ import android.widget.RelativeLayout
 import java.util.*
 
 data class Blind(
-    var id: Int? = null,
+    var id: Int?,
     var name: String?,
     var itemProgression: Int?,
     var ip: String?,
@@ -28,7 +28,7 @@ object Handler {
         var isMatching = true
         if (udpPacketText != "rola;") isMatching = false
         blindsList.forEach {
-//            if (it.ip == blind.ip) isMatching = false
+            if (it.ip == blind.ip) isMatching = false
         }
         if (isMatching) {
             blindsList.add(blind)
@@ -50,8 +50,8 @@ object Handler {
         blindsList.removeAt(position)
         databaseHelper?.deleteBlind(id)
         MainActivity.recyclerView?.adapter?.notifyItemRemoved(position)
-        refresh()
         OptionsActivity.optionsRecyclerView?.adapter?.notifyItemRemoved(position)
+        refresh()
     }
 
     fun renameBlind(position: Int, newName: String) {
